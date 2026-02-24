@@ -1,5 +1,6 @@
 using System.IO;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Editor
 {
@@ -48,15 +49,43 @@ namespace Editor
         {
             if (sfdEditor1.ShowDialog() == DialogResult.OK)
             {
+                string rutaBase = Path.Combine(
+        Path.GetDirectoryName(sfdEditor1.FileName),
+        Path.GetFileNameWithoutExtension(sfdEditor1.FileName));
+
                 path = sfdEditor1.FileName;
+                string rutaXML = rutaBase + ".xml";
                 using (StreamWriter archivo = new StreamWriter(path))
                 {
                     archivo.Write(rtbEditor.Text);
-
                 }
+                XElement xml = new XElement("Archivo");
+                xml.Add(
+                    new XElement("Fuente", rtbEditor.SelectionFont.Name),
+                    new XElement("Tamaño", rtbEditor.SelectionFont.Size),
+                    new XElement("Estilo", rtbEditor.SelectionFont.Style),
+                    new XElement("Color", rtbEditor.ForeColor),
+                    new XElement("Texto", rtbEditor.Text)
+                    );
+
+                try
+                {
+                    // Explorador de solciones - abrir en explorador de archivos - bin- debug- windows
+                    xml.Save(rutaXML);
+                    MessageBox.Show("Guardado", "Sistema", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
+
+
+
             }
 
         }
+
+       
 
         private void guardarToolStripMenuItem_Click(object sender, EventArgs e)
         {

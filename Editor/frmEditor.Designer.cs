@@ -111,14 +111,14 @@
             // fuenteToolStripMenuItem
             // 
             fuenteToolStripMenuItem.Name = "fuenteToolStripMenuItem";
-            fuenteToolStripMenuItem.Size = new Size(270, 34);
+            fuenteToolStripMenuItem.Size = new Size(167, 34);
             fuenteToolStripMenuItem.Text = "Fuente";
             fuenteToolStripMenuItem.Click += fuenteToolStripMenuItem_Click;
             // 
             // colorToolStripMenuItem
             // 
             colorToolStripMenuItem.Name = "colorToolStripMenuItem";
-            colorToolStripMenuItem.Size = new Size(270, 34);
+            colorToolStripMenuItem.Size = new Size(167, 34);
             colorToolStripMenuItem.Text = "Color";
             colorToolStripMenuItem.Click += colorToolStripMenuItem_Click;
             // 
@@ -139,7 +139,7 @@
             // sfdEditor1
             // 
             sfdEditor1.FileName = "sfdEditor";
-            sfdEditor1.Filter = "\"Archivos de texto\"|*.txt";
+            sfdEditor1.Filter = "\"Archivos de texto\"|*.txt ";
             // 
             // statusStrip1
             // 
