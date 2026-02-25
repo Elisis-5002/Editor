@@ -42,21 +42,15 @@ namespace Editor
                 if (!File.Exists(rutaTxt))
                     return;
 
-                // 🔹 ruta base sin extensión
                 string rutaBase = Path.Combine(
                     Path.GetDirectoryName(rutaTxt),
                     Path.GetFileNameWithoutExtension(rutaTxt));
 
                 string rutaXML = rutaBase + ".xml";
 
-                // =========================
-                // 📄 Cargar texto
-                // =========================
                 rtbEditor.Text = File.ReadAllText(rutaTxt);
 
-                // =========================
-                // 🌿 Si existe XML, aplicar formato
-                // =========================
+                
                 if (File.Exists(rutaXML))
                 {
                     try
@@ -72,7 +66,6 @@ namespace Editor
                         int colorArgb = int.Parse(
                             raiz.Element("Color").Value);
 
-                        // aplicar formato al texto completo
                         rtbEditor.SelectAll();
                         rtbEditor.SelectionFont = new Font(fuente, tamano, estilo);
                         rtbEditor.SelectionColor = Color.FromArgb(colorArgb);
@@ -80,7 +73,7 @@ namespace Editor
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Error al cargar formato:\n" + ex.Message);
+                        MessageBox.Show("Error al reescribir el formato:\n" + ex.Message);
                     }
                 }
 
