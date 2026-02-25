@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -34,26 +34,80 @@ namespace Editor
         private void abrirToolStripMenuItem_Click(object sender, EventArgs e)
         {
             rtbEditor.Clear();
-
-
             if (ofdEditor.ShowDialog() == DialogResult.OK)
             {
-                if (File.Exists(ofdEditor.FileName))
-                {
-                    rtbEditor.Text = File.ReadAllText(ofdEditor.FileName);
 
+                string rutaTxt = ofdEditor.FileName;
+
+                if (!File.Exists(rutaTxt))
+                    return;
+
+                // 🔹 ruta base sin extensión
+                string rutaBase = Path.Combine(
+                    Path.GetDirectoryName(rutaTxt),
+                    Path.GetFileNameWithoutExtension(rutaTxt));
+
+                string rutaXML = rutaBase + ".xml";
+
+                // =========================
+                // 📄 Cargar texto
+                // =========================
+                rtbEditor.Text = File.ReadAllText(rutaTxt);
+
+                // =========================
+                // 🌿 Si existe XML, aplicar formato
+                // =========================
+                if (File.Exists(rutaXML))
+                {
+                    try
+                    {
+                        XDocument doc = XDocument.Load(rutaXML);
+                        XElement raiz = doc.Element("Archivo");
+
+                        string fuente = raiz.Element("Fuente").Value;
+                        float tamano = float.Parse(raiz.Element("Tamaño").Value);
+                        FontStyle estilo = (FontStyle)Enum.Parse(
+                            typeof(FontStyle),
+                            raiz.Element("Estilo").Value);
+                        int colorArgb = int.Parse(
+                            raiz.Element("Color").Value);
+
+                        // aplicar formato al texto completo
+                        rtbEditor.SelectAll();
+                        rtbEditor.SelectionFont = new Font(fuente, tamano, estilo);
+                        rtbEditor.SelectionColor = Color.FromArgb(colorArgb);
+                        rtbEditor.DeselectAll();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error al cargar formato:\n" + ex.Message);
+                    }
                 }
+
+                path = rutaTxt;
+                saved = true;
+
+                /*
+                if (ofdEditor.ShowDialog() == DialogResult.OK)
+                {
+                    if (File.Exists(ofdEditor.FileName))
+                    {
+                        rtbEditor.Text = File.ReadAllText(ofdEditor.FileName);
+
+                    }
+                }*/
             }
         }
         private void guardar()
         {
             if (sfdEditor1.ShowDialog() == DialogResult.OK)
             {
+                path = sfdEditor1.FileName;
                 string rutaBase = Path.Combine(
         Path.GetDirectoryName(sfdEditor1.FileName),
         Path.GetFileNameWithoutExtension(sfdEditor1.FileName));
 
-                path = sfdEditor1.FileName;
+                
                 string rutaXML = rutaBase + ".xml";
                 using (StreamWriter archivo = new StreamWriter(path))
                 {
@@ -62,9 +116,9 @@ namespace Editor
                 XElement xml = new XElement("Archivo");
                 xml.Add(
                     new XElement("Fuente", rtbEditor.SelectionFont.Name),
-                    new XElement("Tama�o", rtbEditor.SelectionFont.Size),
+                    new XElement("Tamaño", rtbEditor.SelectionFont.Size),
                     new XElement("Estilo", rtbEditor.SelectionFont.Style),
-                    new XElement("Color", rtbEditor.ForeColor),
+                    new XElement("Color", rtbEditor.ForeColor.ToArgb()),
                     new XElement("Texto", rtbEditor.Text)
                     );
 
@@ -126,8 +180,8 @@ namespace Editor
             string[] palabras = texto.Split(new char[] { ' ', '\n', '\r', '\t' }, StringSplitOptions.RemoveEmptyEntries);
             string[] parrafos = texto.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
-            MessageBox.Show("Estad�sticas: \n\nPalabras: " + tssStatus.Text + "\nLetras (con espacio): " + texto.Length.ToString() +
-                "\n P�rrafos: " + parrafos.Length.ToString(), "Contador de palabras");
+            MessageBox.Show("Estadísticas: \n\nPalabras: " + tssStatus.Text + "\nLetras (con espacio): " + texto.Length.ToString() +
+                "\n Párrafos: " + parrafos.Length.ToString(), "Contador de palabras");
 
         }
 
